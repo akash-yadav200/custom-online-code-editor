@@ -1,54 +1,17 @@
-import Editor from "@monaco-editor/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { languageOptions } from "../config/languageMap";
-import { editorThemesMap, defineTheme } from "./ThemeMap";
+import { editorThemesMap as themeOptions } from "../config/ThemeMap";
+import EditorComponent from "./EditorComponent";
+import { EditorContext } from "../context/EditorContext";
 import axios from "axios";
-
-interface LanguageProps {
-  id: number;
-  name: string;
-  label: string;
-  value: string;
-  template: string;
-}
-interface ThemeProps {
-  [key: string]: string;
-}
+import { LanguageProps } from "../types/types";
 
 export default function CustomEditor() {
-  const themeOptions: ThemeProps = editorThemesMap;
-  const [seletedLanguage, setSelectedLanguage] = useState({
-    id: 63,
-    name: "JavaScript (Node.js 12.14.0)",
-    label: "JavaScript (Node.js 12.14.0)",
-    value: "javascript",
-    template: `console.log('Hello, World!');`,
-  });
-  const [seletedTheme, setSelectedTheme] = useState("vs-dark");
-  const [code, setCode] = useState(seletedLanguage.template || "");
-
+  const { handleLanguageChange, seletedLanguage, code, handleThemeChange } =
+    useContext(EditorContext);
   const [outputSection, setOutputSection] = useState("");
   const [inputSection, setInputSection] = useState("");
-
-  //console.log(apiUrl, apiKey, apiHost);
-  function handleThemeChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const theme = e.target.value;
-    console.log("theme...", theme);
-
-    if (["light", "vs-dark"].includes(theme)) {
-      setSelectedTheme(theme);
-    } else {
-      defineTheme(theme).then(() => setSelectedTheme(theme));
-    }
-  }
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const language = e.target.value;
-    console.log("language...", language);
-    const languageValue: LanguageProps =
-      languageOptions.find((l) => l.value === language) || languageOptions[0];
-    setSelectedLanguage(languageValue);
-  };
-  const checkStatus = async (token: string) => {
+  const getExecutionStatus = async (token: string) => {
     const options = {
       method: "GET",
       url: import.meta.env.VITE_RAPID_API_URL + "/" + token,
@@ -62,16 +25,14 @@ export default function CustomEditor() {
       const response = await axios.request(options);
       const statusId = response.data.status?.id;
 
-      // Processed - we have a result
+      // check execution status
       if (statusId === 1 || statusId === 2) {
-        // still processing
         setTimeout(() => {
-          checkStatus(token);
-        }, 2000);
+          getExecutionStatus(token); //if execution is still processing, poll every 1000
+        }, 1000);
         return;
       } else {
         setOutputSection(atob(response.data.stdout));
-        console.log("response.data", response.data);
         return;
       }
     } catch (err) {
@@ -79,8 +40,7 @@ export default function CustomEditor() {
     }
   };
 
-  async function SubmitData() {
-    console.log(code);
+  async function runCode() {
     const formData = {
       language_id: seletedLanguage.id,
       source_code: btoa(code),
@@ -108,7 +68,7 @@ export default function CustomEditor() {
 
       if (response.data) {
         const { token } = response.data;
-        checkStatus(token); // Poll every 1000 ms (1 second)
+        getExecutionStatus(token); // Poll every 1000 ms (1 second)
       }
     } catch (error) {
       console.error("Error submitting data:", error);
@@ -120,7 +80,7 @@ export default function CustomEditor() {
       <div className="flex h-1/6 items-center justify-center w-full ">
         <div className="w-2/5 h-full  bg-slate-950 text-white">
           <div className="text-2xl h-full flex items-center ">
-            Judge0 Code Editor
+            Custom Code Editor with Judge0
           </div>
         </div>
         <div className="languageSelector w-1/5 h-full flex items-center bg-slate-950 text-white">
@@ -155,27 +115,17 @@ export default function CustomEditor() {
         </div>
       </div>
       <div className="h-4/5 rounded-md w-full flex  items-center justify-center">
-        <Editor
-          language={seletedLanguage.value}
-          value={code}
-          theme={seletedTheme}
-          options={{
-            wordWrap: "on",
-            minimap: {
-              enabled: false,
-            },
-          }}
-          height={`80vh`}
-          width={`100%`}
-          onChange={(value) => setCode(value!)}
-        />
+        <EditorComponent />
         <div className="w-2/5 h-full bg-slate-950 text-white">
           <div className="text-2xl w-full h-2/5 p-2 rounded-md bg-slate-400 text-white border-gray-200">
             <textarea
               name="outputSection"
               id="outputSection"
+              placeholder="Output"
               className="w-full h-full p-2 rounded-md bg-slate-400 text-white border-gray-200"
               value={outputSection}
+              rows={10}
+              cols={50}
               onChange={() => {
                 console.log("test");
               }}
@@ -185,15 +135,18 @@ export default function CustomEditor() {
             <button
               type="button"
               className="py-2.5 px-5  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              onClick={SubmitData}
+              onClick={runCode}
             >
-              Compile and Execute
+              Run
             </button>
           </div>
           <div className="text-2xl w-full h-2/5 p-2 rounded-md bg-slate-400 text-white border-gray-200">
             <textarea
               name="inputSection"
               id="inputSection"
+              placeholder="Input"
+              rows={10}
+              cols={50}
               className="w-full h-full p-2 rounded-md bg-slate-400 text-white border-gray-200"
               value={inputSection}
               onChange={(e) => setInputSection(e.target.value)}
