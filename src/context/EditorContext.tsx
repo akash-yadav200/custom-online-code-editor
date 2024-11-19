@@ -14,25 +14,25 @@ const defaultLanguage: LanguageProps = {
 export const EditorContext = createContext<EditorContextType>({
   code: "",
   setCode: () => {},
-  seletedLanguage: languageOptions[0] || defaultLanguage,
+  selectedLanguage: languageOptions[0] || defaultLanguage,
   handleLanguageChange: () => {},
   selectedTheme: "vs-dark",
   handleThemeChange: () => {},
 });
 
 export const EditorProvider = ({ children }: React.PropsWithChildren) => {
-  const [code, setCode] = useState("");
-  const [seletedLanguage, setSelectedLanguage] = useState(
+  const [selectedLanguage, setSelectedLanguage] = useState(
     languageOptions[0] || defaultLanguage
   );
+  const [code, setCode] = useState(selectedLanguage.template);
   const [selectedTheme, setSelectedTheme] = useState("vs-dark");
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const language = e.target.value;
-    console.log("language...", language);
     const languageValue: LanguageProps =
       languageOptions.find((l) => l.value === language) || languageOptions[0];
     setSelectedLanguage(languageValue);
+    setCode(languageValue.template);
   };
   function handleThemeChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const theme = e.target.value;
@@ -50,7 +50,7 @@ export const EditorProvider = ({ children }: React.PropsWithChildren) => {
       value={{
         code,
         setCode,
-        seletedLanguage,
+        selectedLanguage,
         handleLanguageChange,
         selectedTheme,
         handleThemeChange,

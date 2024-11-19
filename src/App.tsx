@@ -1,5 +1,5 @@
 import "./App.css";
-import CustomEditor from "./componets/EditoLayout";
+import CustomEditor from "./componets/EditorLayout";
 import { EditorProvider } from "./context/EditorContext";
 
 function App() {

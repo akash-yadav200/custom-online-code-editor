@@ -12,7 +12,7 @@ export interface ThemeProps {
 export interface EditorContextType {
   code: string;
   setCode: React.Dispatch<React.SetStateAction<string>>;
-  seletedLanguage: LanguageProps;
+  selectedLanguage: LanguageProps;
   handleLanguageChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   selectedTheme: string;
   handleThemeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;

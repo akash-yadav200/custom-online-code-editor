@@ -3,13 +3,13 @@ import { useContext } from "react";
 import { EditorContext } from "../context/EditorContext";
 
 export default function EditorComponent() {
-  const { seletedLanguage, selectedTheme, code, setCode } =
+  const { selectedLanguage, selectedTheme, code, setCode } =
     useContext(EditorContext);
 
   return (
     <Editor
-      language={seletedLanguage.value}
-      value={seletedLanguage.template || code}
+      language={selectedLanguage.value}
+      value={code}
       theme={selectedTheme}
       options={{
         wordWrap: "on",

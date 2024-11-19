@@ -59,7 +59,7 @@ func main() {
     name: "Java",
     label: "Java",
     value: "java",
-    template: `public class HelloWorld {
+    template: `public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, World!");
     }
