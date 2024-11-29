@@ -1,50 +1,77 @@
-# React + TypeScript + Vite
+# **Online Code Editor**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An online platform for writing, editing, and executing code in multiple programming languages. The editor provides a seamless coding experience with the help of **Monaco Editor** and uses **Judg0** for code execution.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## **Features**
 
-## Expanding the ESLint configuration
+- **Code Editing**: Supports syntax highlighting, autocompletion, and other advanced features using Monaco Editor.
+- **Code Execution**: Execute code in multiple programming languages via the Judg0 API.
+- **Real-Time Feedback**: View execution results, errors, or outputs instantly.
+- **Language Support**: Execute code in various popular programming languages like Python, JavaScript, Java, C++, and more.
+- **Responsive Interface**: Designed for both desktop and mobile devices.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## **Getting Started**
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### **Prerequisites**
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (v16 or higher recommended)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- Access to the [Judg0 API](https://rapidapi.com/judge0-official/api/judge0-ce) (API key required)
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+---
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### **Installation**
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd <project-directory>
+
+2. **Install dependencies**:
+     ```bash
+     npm install
+3. **Set up environment variables**:
+    Create a .env file in the root directory.
+    Add the required variables
+    ```env
+    VITE_RAPID_API_URL=<Judg0-API-URL>
+    VITE_RAPID_API_HOST=<Judg0-API-HOST>
+    VITE_RAPID_API_KEY=<Your-Judg0-API-Key>
+
+
+
+## Usage
+
+
+ - Open the editor in your browser.
+ - Select the programming language from the dropdown menu.
+ - Write your code in the editor powered by Monaco Editor.
+ - Click the Execute Code button to execute your code using Judg0.
+ - View the output or error messages in the result section.
+
+
+
+## Built With
+
+- **Monaco Editor**: For a robust code editing experience.
+- **Judg0**: For executing and compiling code online.
+- **React.js**: For building the user interface.
+- **Node.js**: For backend (if applicable).
+- **REST APIs**: For integrating Judg0's code execution features.
+
+
+## License
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+Monaco Editor for the code editing experience.
+
+Judg0 for the code execution API.
+
+Open-source libraries and tools that made this project possible.
